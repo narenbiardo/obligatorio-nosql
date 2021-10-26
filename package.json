@@ -13,6 +13,7 @@
     "@types/assert": "^1.5.6"
   },
   "dependencies": {
+    "express": "^4.17.1",
     "rethinkdb": "^2.4.2"
   }
 }
