@@ -19,6 +19,7 @@ app.use(express.json());
 
 var p = r.connect({ host: 'localhost', port: 28015, db: 'test'});
 
+// Listar usuario
 app.get("/usuarios", (req, res) => {
   p.then(function(conn) {
     r.table('usuarios')
@@ -34,6 +35,7 @@ app.get("/usuarios", (req, res) => {
   });
 });
 
+// Agregar usuario
 app.post("/usuarios", (req, res) => {
   p.then(function(conn) {
     r.table('usuarios')
@@ -44,6 +46,35 @@ app.post("/usuarios", (req, res) => {
         apellido: req.body.apellido,
         roles: []
     })
+      .run(conn, function (err, res2) {
+        if (err) throw err;
+        res.json(res2);
+    })
+  }).error(function(err) {
+    throw err;
+  });
+});
+
+// Detalle usuario
+app.get('/usuarios:id', (req, res) => {
+  p.then(function(conn) {
+    r.table('usuarios')
+      .get(req.body.correo)
+      .run(conn, function (err, res2) {
+        if (err) throw err;
+        res.json(res2);
+    })
+  }).error(function(err) {
+    throw err;
+  });
+});
+
+// Eliminar usuario
+app.delete('/usuarios:id', (req, res) => {
+  p.then(function(conn) {
+    r.table('usuarios')
+      .get(req.body.correo)
+      .delete()
       .run(conn, function (err, res2) {
         if (err) throw err;
         res.json(res2);
