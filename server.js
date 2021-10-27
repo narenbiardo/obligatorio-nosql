@@ -4,21 +4,7 @@ var app = express();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-// r.connect({ host: 'localhost', port: 28015 }, function(err, conn) {
-//   if(err) throw err;
-//   r.db('test').tableCreate('tv_shows').run(conn, function(err, res) {
-//     if(err) throw err;
-//     console.log(res);
-//     r.table('tv_shows').insert({ name: 'Star Trek TNG' }).run(conn, function(err, res)
-//     {
-//       if(err) throw err;
-//       console.log(res);
-//     });
-//   });
-// });
-
 var p = r.connect({ host: 'localhost', port: 28015, db: 'test'});
-
 
 // Obtener codigos de error
 app.get("/errores", (req, res) => {
@@ -34,7 +20,7 @@ app.get("/errores", (req, res) => {
 
 // Listar usuario
 app.get("/usuarios", (req, res) => {
-  p.then(function(conBorrarn) {
+  p.then(function(conn) {
     r.table('usuarios')
       .run(conn, function (err, cursor) {
         if (err) throw err;
@@ -98,7 +84,7 @@ app.delete('/usuarios:id', (req, res) => {
 });
 
 // Agregar roles
-app.get('/roles', (req, res) => {
+app.post('/roles', (req, res) => {
   p.then(function(conn) {
     r.table('usuarios')
       .get(req.body.correo)
@@ -120,5 +106,5 @@ app.get('/roles', (req, res) => {
 //
 
 app.listen(3000, () => {
-  console.log("Corriendo en puerto 3000");
+  console.log("Escuchando en puerto 3000");
 });
