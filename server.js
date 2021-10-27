@@ -18,7 +18,7 @@ app.get("/errores", (req, res) => {
 });
 
 
-// Listar usuario
+// Listar usuarios
 app.get("/usuarios", (req, res) => {
   p.then(function(conn) {
     r.table('usuarios')
@@ -84,7 +84,7 @@ app.delete('/usuarios:id', (req, res) => {
 });
 
 // Agregar roles
-app.post('/roles', (req, res) => {
+app.post('/roles:usuarioId', (req, res) => {
   p.then(function(conn) {
     r.table('usuarios')
       .get(req.body.correo)
@@ -100,7 +100,29 @@ app.post('/roles', (req, res) => {
 });
 
 // Eliminar roles
-//
+app.delete('/roles:usuarioId', (req, res) => {
+  p.then(function(conn) {
+    var countRolesReq = req.body.roles.length;
+    r.branch( // el branch de RethinkDB es una estructura para condicionales
+      r.table('usuarios')
+      .get(req.body.correo)('roles')
+      .setIntersection(req.body.roles)
+      .count()
+      .eq(countRolesReq), // if, roles que traigo del body request = roles del usuario
+        // hace esto
+        r.table('usuarios')
+        .get(req.body.correo)
+        .update({roles: r.row('roles').difference(req.body.roles)}),
+      // else, hace esto
+      "Error 104")
+      .run(conn, function (err, res2) {
+        if (err) throw err;
+        res.json(res2)
+    })
+  }).error(function(err) {
+    throw err;
+  })
+});
 
 // Autenticar usuario
 //
