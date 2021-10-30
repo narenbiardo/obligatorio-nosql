@@ -31,13 +31,6 @@ app.post("/usuarios", (req, res) => {
           // then:
           r.table('errores')
             .get(101),
-      // else if
-      r.table('usuarios')
-        .get(req.body.correo)('pass')
-        .eq(req.body.pass),
-          // then:
-          r.table('errores')
-            .get(104),
       // else:
       r.table('usuarios')
         .insert({
